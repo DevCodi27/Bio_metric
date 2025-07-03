@@ -78,7 +78,7 @@ If you want to run on iOS:
 
 ## 🧪 Running the App
 
-The apk will available in "<Your Directory>\Biometrics\bio_metric_app\build\app\outputs\flutter-apk"
+- The apk will available in `<Your Directory>/Biometrics/bio_metric_app/build/app/outputs/flutter-apk`:
 
 ```bash
 flutter clean
