@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:android_intent_plus/android_intent.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:bio_metric_app/home.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +58,8 @@ class _AuthenticateState extends State<Authenticate> {
           ),
         );
         await Future.delayed(Duration(seconds: 1));
-        AppSettings.openAppSettings(); // Open settings
+        _redirecttoSettings(context);
+
         return false;
       }
 
@@ -106,6 +110,41 @@ class _AuthenticateState extends State<Authenticate> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _redirecttoSettings(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text("Fingerprint Not Enrolled"),
+        content: Text(
+          "Your device has a fingerprint sensor, but no fingerprint is registered.\n\n"
+          "Please go to Settings > Biometrics and Security > Fingerprints to add one.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              if (Platform.isAndroid) {
+                final intent = AndroidIntent(
+                  action: 'android.settings.SECURITY_SETTINGS',
+                );
+                intent.launch();
+              } else {
+                AppSettings.openAppSettings();
+              }
+            },
+            child: Text("Settings"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text("Cancel"),
+          ),
+        ],
       ),
     );
   }
