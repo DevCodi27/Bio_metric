@@ -1,128 +1,159 @@
-# Biometric Authentication App (Flutter)
+# 🔐 Biometric Authentication App (Flutter)
 
-A simple Flutter application that demonstrates biometric authentication (like fingerprint) to access a protected screen with animated background. This project uses `local_auth` for biometric authentication and `animated_background` for a visually appealing home screen.
-
-## 🚀 Features
-
-- Biometric authentication using device-supported methods (e.g., fingerprint, face recognition).
-- Secure login screen with fallback handling.
-- Animated home screen using `animated_background` package.
-- Easy navigation after successful login.
+A Flutter application for secure biometric login using fingerprint or face recognition. It redirects users to device settings if no biometrics are registered, and provides a smooth user experience with visual feedback and fallback options.
 
 ---
 
-## 🛠️ Project Setup
+## 🚀 Features
 
-### Prerequisites
+- Biometric authentication (Fingerprint / Face ID)
+- Redirects to security settings if biometrics aren't enrolled
+- Displays alert dialogs for better UX
+- Animated home screen using `animated_background`
+- Fallback to PIN/Pattern available on failed attempts (native fallback)
+- Settings redirection for both Android and iOS
 
-Ensure the following tools are installed:
+---
 
-- [Flutter SDK](https://flutter.dev/docs/get-started/install)
-- Android Studio or VS Code with Flutter and Dart plugins
-- A physical device or emulator (preferably with biometric capabilities)
+## 📱 Screens
 
-### Clone the Repository
+- **Authentication Screen**: Prompt with fingerprint icon and authentication button
+- **Home Screen**: Accessed after successful login, animated background for engaging UI
+
+---
+
+## 🛠️ Setup & Installation
+
+### 🔧 Prerequisites
+
+- Flutter SDK (>= 3.8.1)
+- Android Studio or VS Code
+- Physical Android device with biometrics setup (preferably, fingerprint)
+- Internet connection to fetch dependencies
+
+---
+
+### 💻 Getting Started
 
 ```bash
 git clone https://github.com/your-username/bio_metric_app.git
 cd bio_metric_app
-```
-
-### Install Dependencies
-
-```bash
 flutter pub get
 ```
 
-### Android Configuration
+---
 
-1. Open `android/app/build.gradle` and ensure the following is added:
+## ⚙️ Android Configuration
 
-```gradle
-minSdkVersion 23
-```
+1. In `android/app/build.gradle`:
 
-2. Add required permissions in `android/app/src/main/AndroidManifest.xml`:
+   ```gradle
+   minSdkVersion 23
+   ```
 
-```xml
-<uses-permission android:name="android.permission.USE_BIOMETRIC" />
-<uses-permission android:name="android.permission.USE_FINGERPRINT"/>
-```
+2. In `android/app/src/main/AndroidManifest.xml`, add:
 
-3. Also inside `<application>` tag:
+   ```xml
+   <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+   <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+   <uses-feature android:name="android.hardware.fingerprint" android:required="true" />
+   ```
 
-```xml
-<uses-feature android:name="android.hardware.fingerprint" android:required="true" />
-```
-
-4. In `android/build.gradle`, ensure `kotlin_version` is set properly:
-
-```gradle
-ext.kotlin_version = '1.8.10' // or latest supported version
-```
-
-### iOS Configuration (optional)
-
-If you want to run on iOS:
-
-- Add the following to your `ios/Runner/Info.plist`:
-
-```xml
-<key>NSFaceIDUsageDescription</key>
-<string>This app uses Face ID to authenticate the user.</string>
-```
-
-- Ensure iOS deployment target is >= 10.0.
+3. In `android/build.gradle`, make sure:
+   ```gradle
+   ext.kotlin_version = '1.8.10'
+   ```
 
 ---
 
-## 🧪 Running the App
+## 🍏 iOS Configuration
 
-- The apk will available in `<Your Directory>/Biometrics/bio_metric_app/build/app/outputs/flutter-apk`:
+1. In `ios/Runner/Info.plist`:
+
+   ```xml
+   <key>NSFaceIDUsageDescription</key>
+   <string>This app uses Face ID to authenticate the user.</string>
+   ```
+
+2. iOS Deployment Target: >= 10.0
+
+---
+
+## 🧪 Run the App
 
 ```bash
 flutter clean
 flutter pub get
+flutter run
+```
+
+To build release APK:
+
+```bash
 flutter build apk
 ```
 
-Use a physical device with fingerprint or face authentication enabled.
+Output:  
+`build/app/outputs/flutter-apk/app-release.apk`
 
 ---
 
-## 📄 File Structure
+## 🧩 Folder Structure
 
 ```plaintext
-/lib
-│
-├── main.dart          # Entry point with authentication logic
-├── home.dart          # Home screen with animated background
+lib/
+├── main.dart        # Handles biometric logic and navigation
+├── home.dart        # Home screen with animated visuals
 ```
 
 ---
 
-## ⚠️ Limitations / Assumptions
+## 📦 Dependencies
 
-- Works only on devices that support biometric hardware (emulator support may be limited).
-- Biometric setup (fingerprint/face) must already be configured on the device.
+| Package                | Purpose                                 |
+| ---------------------- | --------------------------------------- |
+| local_auth             | Handle biometric authentication         |
+| local_auth_android     | Platform-specific config for biometrics |
+| android_intent_plus    | Android settings redirection            |
+| app_settings           | Open app settings (iOS compatible)      |
+| permission_handler     | Permission requests                     |
+| animated_background    | Home screen animation                   |
+| flutter_launcher_icons | Custom app icon                         |
 
 ---
 
-## 📦 Packages Used
+## 🎨 Custom App Icon
 
-- [local_auth](https://pub.dev/packages/local_auth) – for biometric authentication
-- [animated_background](https://pub.dev/packages/animated_background) – for animated visuals on the home screen
+- Update path in `pubspec.yaml`:
+  ```yaml
+  flutter_icons:
+    android: true
+    ios: true
+    image_path: assets/images/fingerprint_app_icon.png
+  ```
+- Generate with:
+  ```bash
+  flutter pub run flutter_launcher_icons:main
+  ```
 
 ---
 
-## 👨‍💻 Author
+## ⚠️ Notes
+
+- App may not work on emulators that don’t support biometrics.
+- If no fingerprint is registered, user is redirected to device **Security Settings**.
+- Devices with **in-screen fingerprint sensors** may not show up in `getAvailableBiometrics()`, but authentication still works using `authenticate()` directly.
+
+---
+
+## 👨‍💻 Developer
 
 **Stan Abishek A.**  
-Flutter Developer | CSE Student at PSNACET  
-_Project created as part of personal learning & practice_
+Job Seeker | Flutter Developer  
+📫 _This project is part of my biometric security learning journey._
 
 ---
 
-## 📃 License
+## 📄 License
 
-This project is open source.
+This project is open-source .
