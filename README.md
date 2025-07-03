@@ -1,4 +1,3 @@
-
 # Biometric Authentication App (Flutter)
 
 A simple Flutter application that demonstrates biometric authentication (like fingerprint) to access a protected screen with animated background. This project uses `local_auth` for biometric authentication and `animated_background` for a visually appealing home screen.
@@ -79,8 +78,12 @@ If you want to run on iOS:
 
 ## 🧪 Running the App
 
+- The apk will available in `<Your Directory>/Biometrics/bio_metric_app/build/app/outputs/flutter-apk`:
+
 ```bash
-flutter run
+flutter clean
+flutter pub get
+flutter build apk
 ```
 
 Use a physical device with fingerprint or face authentication enabled.
