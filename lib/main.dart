@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:app_settings/app_settings.dart';
 import 'package:bio_metric_app/home.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
@@ -29,7 +33,6 @@ class Authenticate extends StatefulWidget {
 class _AuthenticateState extends State<Authenticate> {
   final _auth = LocalAuthentication();
   var snack = SnackBar(content: Text("Not Authenticated"));
-  // String _status = "Not Authenticated";
 
   Future<bool> authenticate() async {
     try {
@@ -37,7 +40,26 @@ class _AuthenticateState extends State<Authenticate> {
       bool isDeviceSupported = await _auth.isDeviceSupported();
 
       if (!canCheckBiometrics || !isDeviceSupported) {
-        // _status = "Biometric not Supported";
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Biometric not supported on this device")),
+        );
+        return false;
+      }
+
+      List<BiometricType> availableBioMetric = await _auth
+          .getAvailableBiometrics();
+
+      if (availableBioMetric.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "No biometric registerd. Redirecting to settings....",
+            ),
+          ),
+        );
+        await Future.delayed(Duration(seconds: 1));
+        _redirecttoSettings(context);
+
         return false;
       }
 
@@ -45,14 +67,8 @@ class _AuthenticateState extends State<Authenticate> {
         localizedReason: "Please connect to authenticate",
       );
 
-      // setState(() {
-      //   _status = didAuthenticated
-      //       ? "Authenticated"
-      //       : "Failed to Authenticated";
-      // });
       return didAuthenticated;
     } catch (e) {
-      // setState(() => _status = "Error: $e");
       print("Error Found $e");
       return false;
     }
@@ -71,10 +87,6 @@ class _AuthenticateState extends State<Authenticate> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Padding(
-              //   padding: const EdgeInsets.all(8.0),
-              //   child: Text(_status, style: TextStyle(fontSize: 25)),
-              // ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Icon(Icons.android, size: 100),
@@ -98,6 +110,41 @@ class _AuthenticateState extends State<Authenticate> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _redirecttoSettings(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text("Fingerprint Not Enrolled"),
+        content: Text(
+          "Your device has a fingerprint sensor, but no fingerprint is registered.\n\n"
+          "Please go to Settings > Biometrics and Security > Fingerprints to add one.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              if (Platform.isAndroid) {
+                final intent = AndroidIntent(
+                  action: 'android.settings.SECURITY_SETTINGS',
+                );
+                intent.launch();
+              } else {
+                AppSettings.openAppSettings();
+              }
+            },
+            child: Text("Settings"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text("Cancel"),
+          ),
+        ],
       ),
     );
   }
