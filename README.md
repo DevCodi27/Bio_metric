@@ -80,11 +80,13 @@ If you want to run on iOS:
 ## 🧪 Running the App
 
 ```bash
-flutter run
+flutter clean
+flutter pub get
+flutter build apk
 ```
 
 Use a physical device with fingerprint or face authentication enabled.
-
+The apk will available in <Your Directory>\Biometrics\bio_metric_app\build\app\outputs\flutter-apk
 ---
 
 ## 📄 File Structure
